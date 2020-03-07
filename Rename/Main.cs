@@ -242,5 +242,16 @@ namespace Rename
                 }
             }
         }
+
+        private void ButtonTemplate_Click(object sender, EventArgs e)
+        {
+            TemplateForm tf = new TemplateForm();
+            tf.ShowDialog();
+            if (tf.RegexMatch != null && tf.RegexReplace != null)
+            {
+                TextBoxMatch.Text = tf.RegexMatch;
+                TextBoxReplace.Text = tf.RegexReplace;
+            }
+        }
     }
 }
