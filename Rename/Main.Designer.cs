@@ -37,7 +37,6 @@
             this.ColumnNew = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.ButtonClear = new System.Windows.Forms.Button();
             this.ButtonRename = new System.Windows.Forms.Button();
-            this.CheckBoxEntire = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // LabelMatch
@@ -64,7 +63,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.TextBoxMatch.Location = new System.Drawing.Point(68, 6);
             this.TextBoxMatch.Name = "TextBoxMatch";
-            this.TextBoxMatch.Size = new System.Drawing.Size(276, 20);
+            this.TextBoxMatch.Size = new System.Drawing.Size(335, 20);
             this.TextBoxMatch.TabIndex = 2;
             this.TextBoxMatch.Text = ".";
             this.TextBoxMatch.TextChanged += new System.EventHandler(this.TextBoxMatch_TextChanged);
@@ -133,24 +132,11 @@
             this.ButtonRename.UseVisualStyleBackColor = true;
             this.ButtonRename.Click += new System.EventHandler(this.ButtonRename_Click);
             // 
-            // CheckBoxEntire
-            // 
-            this.CheckBoxEntire.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.CheckBoxEntire.AutoSize = true;
-            this.CheckBoxEntire.Location = new System.Drawing.Point(350, 9);
-            this.CheckBoxEntire.Name = "CheckBoxEntire";
-            this.CheckBoxEntire.Size = new System.Drawing.Size(53, 17);
-            this.CheckBoxEntire.TabIndex = 8;
-            this.CheckBoxEntire.Text = "Entire";
-            this.CheckBoxEntire.UseVisualStyleBackColor = true;
-            this.CheckBoxEntire.CheckedChanged += new System.EventHandler(this.CheckBoxEntire_CheckedChanged);
-            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(415, 423);
-            this.Controls.Add(this.CheckBoxEntire);
             this.Controls.Add(this.ButtonRename);
             this.Controls.Add(this.ButtonClear);
             this.Controls.Add(this.ListViewIO);
@@ -160,7 +146,7 @@
             this.Controls.Add(this.LabelMatch);
             this.MinimumSize = new System.Drawing.Size(256, 256);
             this.Name = "Main";
-            this.Text = "Rename";
+            this.Text = "Bulk Rename";
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -177,7 +163,6 @@
         private System.Windows.Forms.ColumnHeader ColumnNew;
         private System.Windows.Forms.Button ButtonClear;
         private System.Windows.Forms.Button ButtonRename;
-        private System.Windows.Forms.CheckBox CheckBoxEntire;
     }
 }
 

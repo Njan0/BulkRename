@@ -15,10 +15,12 @@ namespace Rename
     public partial class Main : Form
     {
         const string ErrorName = "?";
+        Regex RegexMatch;
 
         public Main()
         {
             InitializeComponent();
+            UpdateRegexMatch();
         }
 
         private void ListViewIO_DragEnter(object sender, DragEventArgs e)
@@ -35,10 +37,11 @@ namespace Rename
                 if (!ContainsFile(file))
                 {
                     string fileName = Path.GetFileName(file);
-                    ListViewItem item = new ListViewItem(new string[] { fileName, FileRegexReplace(fileName) })
+                    ListViewItem item = new ListViewItem(new string[] { fileName, "" })
                     {
                         Tag = file
                     };
+                    RefreshIO(item);
                     ListViewIO.Items.Add(item);
                 }
             }
@@ -90,13 +93,22 @@ namespace Rename
         }
 
         /// <summary>
+        /// Recalculates the output names of a elements in ListViewIO
+        /// </summary>
+        private void RefreshIO(ListViewItem item)
+        {
+            item.SubItems[1].Text = FileRegexReplace(item.SubItems[0].Text);
+            item.BackColor = item.SubItems[0].Text == item.SubItems[1].Text ? Color.Yellow : SystemColors.Window;
+        }
+
+        /// <summary>
         /// Recalculates the output names of all elements in ListViewIO
         /// </summary>
-        private void RefreshOut()
+        private void RefreshIO()
         {
             foreach(ListViewItem item in ListViewIO.Items)
             {
-                item.SubItems[1].Text = FileRegexReplace(item.SubItems[0].Text);
+                RefreshIO(item);
             }
         }
 
@@ -107,59 +119,41 @@ namespace Rename
         /// <returns>Input replaced using the given regular expressions</returns>
         private string FileRegexReplace(string input)
         {
+            if (RegexMatch == null)
+                return ErrorName;
+
+            return RegexMatch.Replace(input, TextBoxReplace.Text);
+        }
+        
+        private void TextBoxMatch_TextChanged(object sender, EventArgs e)
+        {
+            UpdateRegexMatch();
+        }
+
+        /// <summary>
+        /// Convert text in TextBoxMatch to a Regex object.
+        /// Invalid expressions are marked and disables the rename button.
+        /// </summary>
+        private void UpdateRegexMatch()
+        {
             try
             {
-                string rgxIn = CheckBoxEntire.Checked ? EncloseRegex(TextBoxMatch.Text) : TextBoxMatch.Text;
-                if (Regex.IsMatch(input, rgxIn) || !CheckBoxEntire.Checked)
-                {
-                    return Regex.Replace(input, rgxIn, TextBoxReplace.Text);
-                }
+                RegexMatch = new Regex(TextBoxMatch.Text);
+                TextBoxMatch.ForeColor = SystemColors.WindowText;
+                ButtonRename.Enabled = true;
             }
             catch (ArgumentException)
             {
-
+                RegexMatch = null;
+                TextBoxMatch.ForeColor = Color.Red;
+                ButtonRename.Enabled = false;
             }
-            return ErrorName;
-        }
-
-        /// <summary>
-        /// Checks for a valid regex match
-        /// </summary>
-        /// <param name="input">Input string</param>
-        /// <returns>true iff non-entire match or match successfull</returns>
-        private bool FileRegexMatch(string input)
-        {
-            return !CheckBoxEntire.Checked || Regex.IsMatch(input, EncloseRegex(TextBoxMatch.Text));
-        }
-
-        /// <summary>
-        /// Enclose the regex with a ^ and a $
-        /// </summary>
-        /// <param name="rgx">Regex to enclose</param>
-        /// <returns>^rgx$</returns>
-        private string EncloseRegex(string rgx)
-        {
-            if (!rgx.StartsWith("^"))
-                rgx = "^" + rgx;
-            if (!rgx.EndsWith("$"))
-                rgx += "$";
-
-            return rgx;
-        }
-
-        private void TextBoxMatch_TextChanged(object sender, EventArgs e)
-        {
-            RefreshOut();
+            RefreshIO();
         }
 
         private void TextBoxReplace_TextChanged(object sender, EventArgs e)
         {
-            RefreshOut();
-        }
-
-        private void CheckBoxEntire_CheckedChanged(object sender, EventArgs e)
-        {
-            RefreshOut();
+            RefreshIO();
         }
 
         private void ButtonClear_Click(object sender, EventArgs e)
@@ -169,24 +163,19 @@ namespace Rename
 
         private void ButtonRename_Click(object sender, EventArgs e)
         {
+            if (RegexMatch == null)
+                return;
+
             Dictionary<string, string> moveDict = new Dictionary<string, string>();
             HashSet<string> usedNames = new HashSet<string>();
             foreach (ListViewItem item in ListViewIO.Items)
             {
                 string file = (string)item.Tag;
                 string dir = Path.GetDirectoryName(file);
-                string oldName = item.SubItems[0].Text;
                 string newName = item.SubItems[1].Text;
                 string target = Path.Combine(dir, newName);
 
                 moveDict[file] = target;
-
-                // check for matching error
-                if (!FileRegexMatch(oldName))
-                {
-                    MessageBox.Show("Can not match '" + oldName + "'.", "Matching error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
 
                 // check for collisions
                 if (!usedNames.Add(target))
@@ -211,6 +200,7 @@ namespace Rename
                         {
                             File.Move(entry.Key, entry.Value);
                         }
+                        RemoveFile(entry.Key);
                     }
                     catch (Exception ex)
                     {
@@ -218,8 +208,6 @@ namespace Rename
                             return;
                     }
                 }
-
-                RemoveFile(entry.Key);
             }
         }
     }
