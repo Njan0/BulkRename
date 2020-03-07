@@ -98,7 +98,13 @@ namespace Rename
         private void RefreshIO(ListViewItem item)
         {
             item.SubItems[1].Text = FileRegexReplace(item.SubItems[0].Text);
-            item.BackColor = item.SubItems[0].Text == item.SubItems[1].Text ? Color.Yellow : SystemColors.Window;
+
+            if (!CheckFilename(item.SubItems[1].Text))
+                item.BackColor = Color.Red;
+            else if (item.SubItems[0].Text == item.SubItems[1].Text)
+                item.BackColor = Color.Yellow;
+            else
+                item.BackColor = SystemColors.Window;
         }
 
         /// <summary>
@@ -110,6 +116,28 @@ namespace Rename
             {
                 RefreshIO(item);
             }
+        }
+
+        /// <summary>
+        /// Check if given filename is valid
+        /// </summary>
+        /// <param name="name">Potential file name</param>
+        /// <returns>true iff file name is valid</returns>
+        private bool CheckFilename(string name)
+        {
+            if (name.Contains('\\') || name.Contains('/'))
+                return false;
+
+            try
+            {
+                FileInfo fi = new System.IO.FileInfo(name);
+                return true;
+            }
+            catch (ArgumentException) { }
+            catch (PathTooLongException) { }
+            catch (NotSupportedException) { }
+
+            return false;
         }
 
         /// <summary>
@@ -172,16 +200,20 @@ namespace Rename
             {
                 string file = (string)item.Tag;
                 string dir = Path.GetDirectoryName(file);
+                string oldName = item.SubItems[0].Text;
                 string newName = item.SubItems[1].Text;
                 string target = Path.Combine(dir, newName);
 
-                moveDict[file] = target;
-
-                // check for collisions
-                if (!usedNames.Add(target))
+                if (CheckFilename(newName) && oldName != newName)
                 {
-                    MessageBox.Show("Can not move file '" + file + "' to '" + target + "'.", "Collision error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
+                    moveDict[file] = target;
+
+                    // check for collisions
+                    if (!usedNames.Add(target))
+                    {
+                        MessageBox.Show("Can not move file '" + file + "' to '" + target + "'.", "Collision error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
                 }
                 usedNames.Add(file);
             }
