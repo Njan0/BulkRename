@@ -20,6 +20,16 @@ namespace Rename
             ButtonOK.Enabled = ListViewMR.SelectedItems.Count > 0;
         }
 
+        private void ListViewMR_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            ListViewItem item = ListViewMR.HitTest(e.X, e.Y).Item;
+
+            if (item != null)
+            {
+                Submit(item.SubItems[0].Text, item.SubItems[1].Text);
+            }
+        }
+
         private void ButtonCancel_Click(object sender, EventArgs e)
         {
             Close();
@@ -31,9 +41,16 @@ namespace Rename
                 return;
 
             ListViewItem selection = ListViewMR.SelectedItems[0];
+            Submit(selection.SubItems[0].Text, selection.SubItems[1].Text);
+        }
 
-            RegexMatch = selection.SubItems[0].Text;
-            RegexReplace = selection.SubItems[1].Text;
+        /// <summary>
+        /// Store match/replace and close form.
+        /// </summary>
+        private void Submit(string match, string replace)
+        {
+            RegexMatch = match;
+            RegexReplace = replace;
             Close();
         }
     }

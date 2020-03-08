@@ -43,9 +43,9 @@
             this.ListViewMR = new System.Windows.Forms.ListView();
             this.ColumnMatch = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.ColumnReplace = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.ColumnDescription = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.ButtonOK = new System.Windows.Forms.Button();
             this.ButtonCancel = new System.Windows.Forms.Button();
-            this.ColumnDescription = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.SuspendLayout();
             // 
             // ListViewMR
@@ -64,7 +64,7 @@
             listViewItem2,
             listViewItem3});
             this.ListViewMR.Location = new System.Drawing.Point(9, 10);
-            this.ListViewMR.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.ListViewMR.Margin = new System.Windows.Forms.Padding(2);
             this.ListViewMR.MultiSelect = false;
             this.ListViewMR.Name = "ListViewMR";
             this.ListViewMR.Size = new System.Drawing.Size(260, 264);
@@ -72,6 +72,7 @@
             this.ListViewMR.UseCompatibleStateImageBehavior = false;
             this.ListViewMR.View = System.Windows.Forms.View.Details;
             this.ListViewMR.SelectedIndexChanged += new System.EventHandler(this.ListViewMR_SelectedIndexChanged);
+            this.ListViewMR.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.ListViewMR_MouseDoubleClick);
             // 
             // ColumnMatch
             // 
@@ -82,6 +83,11 @@
             // 
             this.ColumnReplace.Text = "Replace";
             this.ColumnReplace.Width = 64;
+            // 
+            // ColumnDescription
+            // 
+            this.ColumnDescription.Text = "Description";
+            this.ColumnDescription.Width = 96;
             // 
             // ButtonOK
             // 
@@ -108,11 +114,6 @@
             this.ButtonCancel.UseVisualStyleBackColor = true;
             this.ButtonCancel.Click += new System.EventHandler(this.ButtonCancel_Click);
             // 
-            // ColumnDescription
-            // 
-            this.ColumnDescription.Text = "Description";
-            this.ColumnDescription.Width = 96;
-            // 
             // TemplateForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -121,7 +122,7 @@
             this.Controls.Add(this.ButtonCancel);
             this.Controls.Add(this.ButtonOK);
             this.Controls.Add(this.ListViewMR);
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "TemplateForm";
             this.Text = "Templates";
             this.ResumeLayout(false);
